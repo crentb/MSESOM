@@ -59,12 +59,12 @@ def render_cluster_borders_to_axes(ax, cl_labels: np.ndarray, msz: int):
         if i % msz[1] + 1 < msz[1]:  # top border
             if cl_labels[i] != cl_labels[i+1]:
                 ax.plot([rect_x[1], rect_x[2]], [rect_y[1], rect_y[2]], 'k-',
-                        lw=1.5)
+                        lw=8)
 
         if i + msz[1] < len(cl_labels):  # right border
             if cl_labels[i] != cl_labels[i+msz[1]]:
                 ax.plot([rect_x[2], rect_x[3]], [rect_y[2], rect_y[3]], 'k-',
-                        lw=1.5)
+                        lw=8)
 def dataframe_to_coords(som, target_dataframe):
     trained_columns = som._component_names[0]
     return som.bmu_ind_to_xy(som.project_data(target_dataframe[trained_columns].values))
@@ -80,8 +80,8 @@ def clusteringmap_category(ax,sm,n_clusters,dataset,colorcategory,labels, savepa
     on their properties
     """
     categories = dataset[colorcategory] #if colorcategory is one col of the dataset
-    cmap = plt.get_cmap("tab20") #cmap for background
-    n_palette = 20  # number of different colors in this color palette
+    cmap = plt.get_cmap("Greys") #cmap for background
+    n_palette = 100000  # number of different colors in this color palette
     color_list = [cmap((i % n_palette)/n_palette) for i in range(n_clusters)]
     msz = sm.codebook.mapsize
     proj = sm.project_data(sm.data_raw)
@@ -105,7 +105,7 @@ def clusteringmap_category(ax,sm,n_clusters,dataset,colorcategory,labels, savepa
     categories_int = categories.apply(categoryname.index)
 
     N = len(categoryname)
-    cmap_labels = plt.cm.gist_ncar
+    cmap_labels = plt.cm.brg
     # extract all colors from the .jet map
     cmaplist = [cmap_labels(i) for i in range(cmap_labels.N)]
     # create the new map
@@ -114,7 +114,7 @@ def clusteringmap_category(ax,sm,n_clusters,dataset,colorcategory,labels, savepa
     bounds = np.linspace(0,N,N+1)
     norm_labels = mpl.colors.BoundaryNorm(bounds, cmap_labels.N)
 
-    scat = ax.scatter(coord[:, 0]+0.5, coord[:, 1]+0.5, c=categories_int,s=300,cmap=cmap_labels,norm=norm_labels)
+    scat = ax.scatter(coord[:, 0]+0.5, coord[:, 1]+0.5, c=categories_int,s=1000,cmap=cmap_labels,norm=norm_labels)
     cbar = plt.colorbar(scat, spacing='proportional',ticks=bounds)
     cbar.ax.get_yaxis().set_ticks([])
     
@@ -151,12 +151,12 @@ def clusteringmap_category(ax,sm,n_clusters,dataset,colorcategory,labels, savepa
         if i % msz[1] + 1 < msz[1]:  # top border
             if cl_labels[i] != cl_labels[i+1]:
                 ax.plot([rect_x[1], rect_x[2]],
-                        [rect_y[1], rect_y[2]], 'k-', lw=2.5)
+                        [rect_y[1], rect_y[2]], 'k-', lw=8)
 
         if i + msz[1] < len(cl_labels):  # right border
             if cl_labels[i] != cl_labels[i+msz[1]]:
                 ax.plot([rect_x[2], rect_x[3]],
-                        [rect_y[2], rect_y[3]], 'k-', lw=2.5)
+                        [rect_y[2], rect_y[3]], 'k-', lw=8)
 
     plt.savefig(savepath)
     return cl_labels
@@ -170,7 +170,7 @@ def render_posmap_to_axes(ax, som, placement_name_df, raw_name_df, n_clusters, c
 
     # predefined color map in matplotlib
     # see http://matplotlib.org/examples/color/colormaps_reference.html
-    cmap = plt.get_cmap("tab20")
+    cmap = plt.get_cmap("gray")
     n_palette = 20  # number of different colors in this color palette
     color_list = [cmap((i % n_palette)/n_palette) for i in range(n_clusters)]
 
@@ -426,7 +426,8 @@ class ViewTFP(View2D):
             # setting them all as false without needing to write each one out
             ax.tick_params(**disable_ticks_dict)
 
-            plt.colorbar(pl, shrink=0.7)
+            plt.colorbar(pl, shrink=0.7, fraction=0.046, pad=0.04)
+         
 
             # draw line segment to the border of cluster
             msz = som.codebook.mapsize
@@ -440,12 +441,12 @@ class ViewTFP(View2D):
                 if i % msz[1] + 1 < msz[1]:  # top border
                     if cl_labels[i] != cl_labels[i+1]:
                         ax.plot([rect_x[1], rect_x[2]],
-                                [rect_y[1], rect_y[2]], 'k-', lw=1.5)
+                                [rect_y[1], rect_y[2]], 'k-', lw=4)
 
                 if i + msz[1] < len(cl_labels):  # right border
                     if cl_labels[i] != cl_labels[i+msz[1]]:
                         ax.plot([rect_x[2], rect_x[3]],
-                                [rect_y[2], rect_y[3]], 'k-', lw=1.5)
+                                [rect_y[2], rect_y[3]], 'k-', lw=4)
 
         # plt.subplots_adjust(wspace=0.1, hspace=0.1)
         plt.tight_layout()
